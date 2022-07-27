@@ -108,4 +108,50 @@ router.post("/g/add", (req, res) => {
     })
 })
 
+// API call to remove member from a group
+router.post("/g/remove", (req, res) => {
+    // read from request body
+    const [member, listingid] = Object.values(req.body)
+
+    // validate input
+    if (validate(member) && validate(listingid))
+        console.log("Input is clean.")
+    else { 
+        res.send("Input characters are unacceptable.") 
+        return
+    }
+
+    // first check if member is in group
+    let statement = "SELECT groupid,currentcapacity,members FROM `groups` WHERE listingid = ?"
+    db.query(statement, [listingid], (err, result) => {
+        if (err)
+            console.log(err)
+        else {
+            const group = result[0]
+            let memberList = group.members.split(',')
+            if (memberList.includes(member)) {
+                // cant remove if user is the only member in the group. should call delete group instead.
+                if(group.currentcapacity == 1)  {
+                    res.send("Not able to remove user. User is only member in group.")
+                    return
+                }
+                else {
+                    memberList.splice(memberList.indexOf(member), 1)
+                    newMemberList = memberList.join()
+                    statement = "UPDATE `groups` SET members = ?, currentcapacity = ? WHERE groupid = ?"
+                    db.query(statement, [newMemberList, group.currentcapacity-1, group.groupid], (err, result) => {
+                        if (err) {
+                            console.log(err)
+                            res.send("Unknown error. Failed to remove user.")
+                        }
+                        else res.send("Removed user from group!")
+                    })
+                }
+            }
+            // member is not in the group
+            else res.send("Not able to remove user. User is not a part of group.")
+        }
+    })
+})
+
 module.exports = router
