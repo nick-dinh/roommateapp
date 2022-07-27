@@ -13,5 +13,5 @@ const db = mysql.createConnection({
 db.connect((err) => {
     if (err)
         throw err
-    console.log(`Database connected on localhost port ${Port}`)
+    console.log(`Database connected on localhost port ${PORT}`)
 });

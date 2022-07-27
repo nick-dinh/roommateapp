@@ -1,7 +1,7 @@
 const express = require("express")
 const db = require("../env/Database")
-const router = expres.Router()
-const validation = require("../functions/Validation")
+const router = express.Router()
+const { validate } =  require("../functions/Validation")
 
 // API call for getting all listings in db
 router.get("/all", async(req, res) => {
@@ -26,4 +26,4 @@ router.get("/:listingID", async(req, res) => {
     }
 })
 
-modules.export(router)
+module.exports = router

@@ -1,8 +1,8 @@
 const express = require("express")
 const db = require("../env/Database")
-const router = expres.Router()
-const validation = require("../functions/Validation")
+const router = express.Router()
+const { validate } =  require("../functions/Validation")
 
 //
 
-modules.export(router)
+module.exports = router
