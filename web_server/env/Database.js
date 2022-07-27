@@ -15,3 +15,5 @@ db.connect((err) => {
         throw err
     console.log(`Database connected on localhost port ${PORT}`)
 });
+
+module.exports = db
