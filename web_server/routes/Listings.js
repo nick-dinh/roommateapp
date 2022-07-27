@@ -2,9 +2,10 @@ const express = require("express")
 const db = require("../env/Database")
 const router = express.Router()
 const { validate } =  require("../functions/Validation")
+const { route } = require("./Profiles")
 
 // API call for getting all listings in db
-router.get("/all", (req, res) => {
+router.get("/l/all", (req, res) => {
     const statement = "SELECT * FROM listings"
     result = db.query(statement, (err, result) => {
         if (err)
@@ -14,7 +15,7 @@ router.get("/all", (req, res) => {
 })
 
 // API call to get a single listing in db
-router.get("/:listingID", (req, res) => {
+router.get("/l/:listingID", (req, res) => {
     const id = req.params.listingID
     const statement = "SELECT * FROM listings WHERE listingid = ?"
     db.query(statement, [id], (err, result) => {
@@ -24,8 +25,19 @@ router.get("/:listingID", (req, res) => {
     })
 })
 
+// API call to get single group in DB
+router.get("/g/:listingID", (req, res) => {
+    const id = req.params.listingID
+    const statement = "SELECT * from `groups` WHERE listingid = ?"
+    db.query(statement, [id], (err, result) => {
+        if (err)
+            console.log(err)
+        else res.send(result)
+    })
+})
+
 // API call to create a listing in DB
-router.post("/create", (req, res) => {
+router.post("/l/create", (req, res) => {
     // read from request body
     const [author, title, location, duration, description, maxcapacity] = Object.values(req.body)
 
@@ -56,7 +68,7 @@ router.post("/create", (req, res) => {
 })
 
 // API call to add member to group 
-router.post("/add", (req, res) => {
+router.post("/g/add", (req, res) => {
     // read from request body
     const [member, listingid] = Object.values(req.body)
 
